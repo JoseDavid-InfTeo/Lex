@@ -1,0 +1,2 @@
+Autores: Jose Luis Pariente Martinez y David Heras Pino
+Código ejecutado y probado en OS X El Capitan 10.11.1
