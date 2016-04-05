@@ -1,5 +1,5 @@
 main()
-{ 
+{ @
 //declaraciones
 	int a;
 	int b,casa23; 
@@ -10,7 +10,7 @@ main()
 		b=a+1000; 
 	}
 	else
-		f=a+23.5;
+		f=a+23.5;#
 	printf("Adiooooooooos"); 
 }
 //fin

@@ -32,7 +32,8 @@ nodigitos [_a-zA-Z]
 separadores [,;(){}]
 input [^\r\n]
 operador [+*=&"&&"]
-blanco (" ")
+blanco (" ")+
+tabulacion \t
 eol (\n|\r|\r\n)
 numero ({natural}+("."{natural}+)?)
 ident {letra}({nodigitos}|{natural})*
@@ -98,8 +99,8 @@ cadena \"(\\.|[^\\"])*\"
 	}
 }
 
-{cadena} { printf("Cadena: [%s]\n", yytext); cadenas++; }
-{numero} { printf("Numero: [%s]\n", yytext); numeros++; }
+{cadena} { cadenas++; }
+{numero} { numeros++; }
 
 {coment} {
 	lineasComentario++ ;
@@ -118,12 +119,20 @@ cadena \"(\\.|[^\\"])*\"
 
 }
 
-{letra}		  {
+{nodigitos}	  {
+
+}
+
+{blanco} {
+
+}
+
+{tabulacion} {
 
 }
 
 . {
-	printf("Error!\n");
+	printf("Error en linea %d [%s]\n",lineasTotales+1, yytext);
 } ;
 
 %%
