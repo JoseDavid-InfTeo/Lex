@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 int ints = 0, floats = 0, ifs = 0, mains = 0, elses = 0, scanfs = 0, printfs = 0, lineasTotales = 0, lineasComentario = 0, idents = 0, cadenas = 0, numeros = 0;
+int llaves = 1, parentesis = 1, parent = 0, llav = 0;
 char *identificadores[100][100];
 
 struct identificador
@@ -39,6 +40,7 @@ ident {letra}({nodigitos}|{natural})*
 variables ((("int"|"float"){blanco}+{ident})(","{blanco}*{ident})*";")
 coment ("//"{input}*{eol}?)
 cadena \"(\\.|[^\\"])*\"
+llaves [(){}]
 
 %%
 
@@ -47,6 +49,39 @@ cadena \"(\\.|[^\\"])*\"
 "else"		elses++;
 "main"		mains++;
 "scanf"		scanfs++;
+
+{llaves} {
+
+	if(strcmp("(",yytext) == 0)
+	{
+		parent++ ;
+	}
+
+	if(strcmp(")",yytext) == 0)
+	{
+		if (parent < 1) 
+		{
+			parentesis = 0;
+		}else{
+			parent-- ;
+		}
+	}
+
+	if(strcmp("{",yytext) == 0)
+	{
+		llav++ ;
+	}
+
+	if(strcmp("}",yytext) == 0)
+	{
+		if (llav < 1)
+		{
+			llaves = 0;
+		}else{
+			llav-- ;
+		}
+	}
+}
 
 {variables} {
 	char entrada[100];
@@ -154,6 +189,20 @@ int main()
 	  	
   	} 
   	printf("\n");
+
+  	printf("Balanceo de llaves:\n");
+  	if (parentesis == 1 && parent == 0 ) 
+    {
+    	printf("Los parentesis estan bien balanceados :)\n");
+  	}else{
+  		printf("Los parentesis estan MAL balanceados :(\n");
+  	}
+  	if (llaves == 1 && llav == 0 ) 
+    {
+    	printf("Las llaves estan bien balanceadas :)\n");
+  	}else{
+  		printf("Las llaves estan MAL balanceadas :(\n");
+  	}
 
   	printf("Constantes: cadenas[%d], numeros[%d]\n", cadenas, numeros);
 }
