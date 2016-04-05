@@ -5,6 +5,8 @@
 int ints = 0, floats = 0, ifs = 0, mains = 0, elses = 0, scanfs = 0, printfs = 0, lineasTotales = 0, lineasComentario = 0, idents = 0, cadenas = 0, numeros = 0;
 int llaves = 1, parentesis = 1, parent = 0, llav = 0;
 char *identificadores[100][100];
+char *cads[100][100];
+char *nums[100][100];
 
 struct identificador
 {
@@ -134,8 +136,27 @@ llaves [(){}]
 	}
 }
 
-{cadena} { cadenas++; }
-{numero} { numeros++; }
+{cadena} {
+	char entrada[100];
+	int i;
+	strcpy(entrada, yytext);
+	for (i = 0; i < yyleng; i++)
+	{
+		cads[cadenas][i] = entrada[i];	
+	} 
+	cadenas++;
+}
+
+{numero} { 
+	char entrada[100];
+	int i;
+	strcpy(entrada, yytext);
+	for (i = 0; i < yyleng; i++)
+	{
+		nums[numeros][i] = entrada[i];	
+	} 
+	numeros++; 
+}
 
 {coment} {
 	lineasComentario++ ;
@@ -181,10 +202,12 @@ int main()
 	{
 		yylex();
 	}
-
-	printf("\nints: %d floats: %d if: %d, main: %d, else: %d, scanf: %d, printf: %d\n",ints, floats, ifs, mains, elses, scanfs, printfs);
-  	printf("Numero lineas comentario: %d - lineas codigo: %d - lineas totales: %d\n",lineasComentario, lineasTotales-lineasComentario, lineasTotales);
-  	printf("Idents: ");
+	printf("----------------------------------\nNumero de variables:\n\t");
+	printf("ints: %d, floats: %d, if: %d, main: %d, else: %d, scanf: %d, printf: %d\n",ints, floats, ifs, mains, elses, scanfs, printfs);
+  	printf("----------------------------------\nNumero de lineas:\n\t");
+  	printf("comentario: %d - codigo: %d - totales: %d\n",lineasComentario, lineasTotales-lineasComentario, lineasTotales);
+  	printf("----------------------------------\n");
+  	printf("Idents: \n\t");
 
   	for (int i = 0; i < idents; i++)
   	{
@@ -194,26 +217,53 @@ int main()
 	  		printf("%c", identificadores[i][j]);
 	  		j++;
   		}
-  		printf(", ");
+  		printf(" ");
 	  	
-  	} 
-  	printf("\n");
+  	}
 
+  	printf("\n");
+  	printf("----------------------------------\n");
   	printf("Balanceo de llaves:\n");
   	if (parentesis == 1 && parent == 0 ) 
     {
-    	printf("Los parentesis estan bien balanceados :)\n");
+    	printf("\tLos parentesis estan bien balanceados :)\n");
   	}else{
-  		printf("Los parentesis estan MAL balanceados :(\n");
+  		printf("\tLos parentesis estan MAL balanceados :(\n");
   	}
   	if (llaves == 1 && llav == 0 ) 
     {
-    	printf("Las llaves estan bien balanceadas :)\n");
+    	printf("\tLas llaves estan bien balanceadas :)\n");
   	}else{
-  		printf("Las llaves estan MAL balanceadas :(\n");
+  		printf("\tLas llaves estan MAL balanceadas :(\n");
+  	}
+  	printf("----------------------------------\n");
+  	printf("Constantes:\n\tCadenas: ");
+
+  	for (int i = 0; i < cadenas; i++)
+  	{
+  		int j = 0;
+  		while (cads[i][j] != '\0')
+  		{
+	  		printf("%c", cads[i][j]);
+	  		j++;
+  		}
+  		printf(" ");
+	  	
   	}
 
-  	printf("Constantes: cadenas[%d], numeros[%d]\n", cadenas, numeros);
+  	printf("\n\tNumericas: ");
+  	for (int i = 0; i < numeros; i++)
+  	{
+  		int j = 0;
+  		while (nums[i][j] != '\0')
+  		{
+	  		printf("%c", nums[i][j]);
+	  		j++;
+  		}
+  		printf(" ");
+	  	
+  	}
+  	printf("\n\n");
 }
 
 int yywrap()
